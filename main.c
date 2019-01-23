@@ -67,7 +67,7 @@ int main(int argc,char *argv[]){
 		 */
 		if(*argv[1]=='-'){
 			bool showAllCategories=true;
-			char **categoriesToShow;
+			char **categoriesToShow=NULL;
 			int categoriesToShowCount=0;
 
 			for(int i=1;i<argc;i++){
@@ -75,7 +75,7 @@ int main(int argc,char *argv[]){
 				// Flag -f
 				if(strcmp(argv[i],"-f")==0){
 					free(defaultPath);	
-					defaultPath=argv[2];
+					defaultPath=strdup(argv[2]);
 					i++;
 					continue;
 
@@ -116,7 +116,9 @@ int main(int argc,char *argv[]){
 			}
 			displayReminders(categories);
 
-			free(categoriesToShow);
+			if(categoriesToShow!=NULL){
+				free(categoriesToShow);
+			}
 			list_categories_free_all(categories);
 			free(defaultPath);
 			return 0;
@@ -500,6 +502,8 @@ struct List_categories* readFromFile(const char *path){
 	if(file == NULL){
 		file=fopen(path,"w+");
 		fclose(file);
+		struct List_categories *categories=list_categories_init();
+		return categories;
 		exit(0);
 	}
 
