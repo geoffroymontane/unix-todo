@@ -299,7 +299,7 @@ int main(int argc,char *argv[]){
 				}
 
 				if(writeToFile(defaultPath,categories)){
-					printf("Successfully deleted.\n");
+					printf("Successfully deleted\n");
 				}
 
 				free(categoryName);
@@ -316,7 +316,7 @@ int main(int argc,char *argv[]){
 				}
 
 				if(writeToFile(defaultPath,categories)){
-					printf("Successfully deleted.\n");
+					printf("Successfully deleted\n");
 				}
 
 				list_categories_free_all(categories);
@@ -383,7 +383,7 @@ int main(int argc,char *argv[]){
 						}
 					}
 					if(writeToFile(defaultPath,categories)){	
-						printf("Successfully deleted.\n");
+						printf("Successfully deleted\n");
 					}
 				}
 
@@ -405,7 +405,7 @@ int main(int argc,char *argv[]){
 				}
 
 				if(writeToFile(defaultPath,categories)){
-					printf("Successfully deleted.\n");
+					printf("Successfully deleted\n");
 				}
 
 				free(name);
@@ -421,6 +421,8 @@ int main(int argc,char *argv[]){
 		*/
 		else if(strcmp(argv[1],"help")==0 || strcmp(argv[1],"-h")==0){
 			displayHelp();	
+			free(defaultPath);
+			return 0;
 		}
 		/*
 
