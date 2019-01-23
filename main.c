@@ -4,7 +4,6 @@
 #include <readline/history.h>
 #include <string.h>
 
-#include "memleakscheck.c"
 #include "structures.c"
 
 
