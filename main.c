@@ -43,8 +43,6 @@ char* autoCompleteReminders_(const char *text,int state);
 
 int main(int argc,char *argv[]){
 	
-	init();	
-
 	homedir=getenv("HOME"); 
 	defaultPath=strdup(strcat(homedir,"/.uxtodo"));
 
