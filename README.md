@@ -1,5 +1,5 @@
 # unix-todo
 
-![screenshot.png]
+![Screenshot](screenshot.png)
 
 	gcc main.c -lreadline
