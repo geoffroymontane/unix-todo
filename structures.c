@@ -43,9 +43,9 @@ void list_reminders_free_all(struct List_reminders *list){
 	for(int i=0;i<list->size;i++){
 		free(list->data[i]->name);
 		free(list->data[i]);
-		list->data[i]=NULL;
 	}
 	free(list->data);
+	free(list);
 }
 
 void list_reminders_add(struct List_reminders *list, struct reminder *element){
@@ -109,6 +109,7 @@ void list_categories_free_all(struct List_categories *list){
 		free(list->data[i]);
 	}
 	free(list->data);
+	free(list);
 }
 
 void list_categories_add(struct List_categories *list, struct category *element){

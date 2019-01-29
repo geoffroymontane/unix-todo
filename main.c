@@ -4,6 +4,8 @@
 #include <readline/history.h>
 #include <string.h>
 
+#include "memleakscheck.c"
+
 #include "structures.c"
 
 
@@ -18,8 +20,8 @@ char *homedir;
 const char *color1="\e[92m";
 const char *color2="\e[93m";
 const char *color3="\e[91m";
-const char *defaultColor="\033[0m";
-
+const char *defaultColor="\e[0m\e[39m";
+const char *boldColor="\e[1m";
 
 /*
 
@@ -28,7 +30,7 @@ HEADER
 */
 struct List_categories* readFromFile(const char *path);
 void displayReminders(struct List_categories *categories);
-bool writeToFile(const char *path,const struct List_categories *categories);
+bool writeToFile(const char *path,struct List_categories *categories);
 void displayHelp();
 char* readFromPrompt(int autoCompleteMode,const char *prompt);
 char* strip(char *str_);
@@ -40,7 +42,8 @@ char* autoCompleteReminders_(const char *text,int state);
 
 
 int main(int argc,char *argv[]){
-
+	
+	init();	
 
 	homedir=getenv("HOME"); 
 	defaultPath=strdup(strcat(homedir,"/.uxtodo"));
@@ -110,6 +113,7 @@ int main(int argc,char *argv[]){
 						}
 					}
 					if(!shown){
+						free(categories->data[i]->name);
 						categories->data[i]->name=strdup("__deleted__");
 					}
 				}
@@ -223,6 +227,7 @@ int main(int argc,char *argv[]){
 			for(int i=0;i<categories->size;i++){
 				if(strcmp(categories->data[i]->name,categoryName)==0){
 					list_reminders_add(categories->data[i]->reminders,newReminder);
+					free(categoryName);
 					reminderAdded=true;
 					break;
 				}
@@ -233,7 +238,6 @@ int main(int argc,char *argv[]){
 				newCategory->reminders=list_reminders_init();
 				list_reminders_add(newCategory->reminders,newReminder);
 				list_categories_add(categories,newCategory);
-
 			}
 
 			if(writeToFile(defaultPath,categories)){
@@ -241,8 +245,6 @@ int main(int argc,char *argv[]){
 			}
 
 			list_categories_free_all(categories);
-			free(name);
-			free(categoryName);
 			free(defaultPath);
 			return 0;
 		}
@@ -265,10 +267,11 @@ int main(int argc,char *argv[]){
 				}
 				else if(strcmp(argv[i],"-c")==0){ 
 					free(categoryName);
-					categoryName=strdup("__none__");
 					if(i+1<argc){
-						free(categoryName);
 						categoryName=strdup(argv[i+1]);
+					}
+					else{
+						categoryName=strdup("__none__");
 					}
 				}
 			}
@@ -294,6 +297,7 @@ int main(int argc,char *argv[]){
 				struct List_categories *categories=readFromFile(defaultPath);
 				for(int i=0;i<categories->size;i++){
 					if(strcmp(categories->data[i]->name,categoryName)==0){
+						free(categories->data[i]->name);
 						categories->data[i]->name=strdup("__deleted__");	
 					}
 				}
@@ -311,6 +315,7 @@ int main(int argc,char *argv[]){
 				struct List_categories *categories=readFromFile(defaultPath);
 				for(int i=0;i<categories->size;i++){
 					if(strcmp(categories->data[i]->name,categoryName)==0){
+						free(categories->data[i]->name);
 						categories->data[i]->name=strdup("__deleted__");	
 					}
 				}
@@ -378,6 +383,7 @@ int main(int argc,char *argv[]){
 					for(int i=0;i<categories->size;i++){
 						for(int j=0;j<categories->data[i]->reminders->size;j++){
 							if(strcmp(categories->data[i]->reminders->data[j]->name,name)==0){
+								free(categories->data[i]->reminders->data[j]->name);
 								categories->data[i]->reminders->data[j]->name=strdup("__deleted__");
 							}
 						}
@@ -399,6 +405,7 @@ int main(int argc,char *argv[]){
 				for(int i=0;i<categories->size;i++){
 					for(int j=0;j<categories->data[i]->reminders->size;j++){
 						if(strcmp(categories->data[i]->reminders->data[j]->name,name)==0){
+							free(categories->data[i]->reminders->data[j]->name);
 							categories->data[i]->reminders->data[j]->name=strdup("__deleted__");	
 						}
 					}
@@ -480,7 +487,7 @@ int main(int argc,char *argv[]){
 			}
 
 			if(writeToFile(defaultPath,categories)){
-				printf("Successfully changed.\n");
+				printf("Successfully changed\n");
 			}
 				
 			free(name);	
@@ -506,7 +513,6 @@ struct List_categories* readFromFile(const char *path){
 		fclose(file);
 		struct List_categories *categories=list_categories_init();
 		return categories;
-		exit(0);
 	}
 
 	struct List_categories *categories=list_categories_init();
@@ -515,15 +521,15 @@ struct List_categories* readFromFile(const char *path){
 	while(fgets(line,1024,file)!=NULL){
 		if(line[0]=='c'){
 			struct category *newCategory=malloc(sizeof(struct category));
-			newCategory->name=strndup(line+2,strlen(line)-2);
-			newCategory->name=strip(newCategory->name);
+			char* name=strndup(line+2,strlen(line)-2);
+			newCategory->name=strip(name);
 			newCategory->reminders=list_reminders_init();
 			list_categories_add(categories,newCategory);
 		}
 		else if(line[0]=='r'){
 			struct reminder *newReminder=malloc(sizeof(struct reminder));
-			newReminder->name=strndup(line+4,strlen(line)-4);
-			newReminder->name=strip(newReminder->name);
+			char* name=strndup(line+4,strlen(line)-4);
+			newReminder->name=strip(name);
 			char *priority=strndup(line+2,1);
 			newReminder->priority=atoi(priority);
 			free(priority);
@@ -555,7 +561,7 @@ char* strip(char *str_){
 	char *str;
 
 	if(str_[strlen(str_)-1]==10){
-		char *str__=strip(strndup(str_,strlen(str_)-1));
+		char *str__=strndup(str_,strlen(str_)-1);
 		free(str_);
 		str_=str__;
 	}	
@@ -596,7 +602,9 @@ char* autoCompleteCategories_(const char *text,int state){
 				}
 			}
 			if(match){
-				return strdup(categories->data[i]->name);
+				char* name=strdup(categories->data[i]->name);
+				list_categories_free_all(categories);
+				return name;
 			}
 		}
 	}
@@ -616,7 +624,9 @@ char* autoCompleteReminders_(const char *text,int state){
 					}
 				}
 				if(match){
-					return strdup(categories->data[j]->reminders->data[i]->name);
+					char* name=strdup(categories->data[j]->reminders->data[i]->name);
+					list_categories_free_all(categories);
+					return name;
 				}
 			}
 		}
@@ -625,7 +635,7 @@ char* autoCompleteReminders_(const char *text,int state){
 	return NULL;
 }
 
-bool writeToFile(const char *path,const struct List_categories *categories){
+bool writeToFile(const char *path,struct List_categories *categories){
 	FILE *file;
 	file=fopen(path,"w+");
 
@@ -635,7 +645,7 @@ bool writeToFile(const char *path,const struct List_categories *categories){
 	}
 
 	for(int i=0;i<categories->size;i++){
-		if(categories->data[i]->name!="__deleted__" && categories->data[i]->reminders->size!=0){
+		if(strcmp(categories->data[i]->name,"__deleted__")!=0 && categories->data[i]->reminders->size!=0){
 			fprintf(file,"c ");
 			fprintf(file,categories->data[i]->name);
 			fprintf(file,"\n");
@@ -658,10 +668,10 @@ bool writeToFile(const char *path,const struct List_categories *categories){
 
 void displayReminders(struct List_categories *categories){
 
-	if(categories->size==0){
+	if(categories->size==0 || (categories->size==1 && categories->data[0]->reminders->size==0)){
 		printf("\nYou have nothing to do.\n");
 		printf("See 'uxtodo help'.\n\n");
-		exit(0);
+		return;
 	}
 
 	printf("\nToDo list:\n");
@@ -699,31 +709,31 @@ void displayReminders(struct List_categories *categories){
 
 void displayHelp(){
 
-	printf("COMMANDS\n\n\n");
+	printf("\nCOMMANDS\n\n");
 
 	printf(color3);printf("todo\n\n");printf(defaultColor);
 	printf("Will show reminder list. If -c is provided, it will show only\nthose of the specified categories.\n");
-	printf("Flags : [-f otherFilename] [-c categoryName1 categoryName2 ...]\n\n");
+	printf(boldColor);printf("Flags : [-f otherFilename] [-c categoryName1 categoryName2 ...]\n\n");printf(defaultColor);
 
 	printf(color3);printf("todo help\n\n");printf(defaultColor);
 	printf("Will show how to use this software.\n\n");
 
 	printf(color3);printf("todo add\n\n");printf(defaultColor);
 	printf("Add a reminder. If -n is not provided, it will ask for name,\ncategory and priority.\n");
-	printf("Flags : [-f otherFilename] [-n reminderName] [-c categoryName]\n[-p priorityInteger in [0,3]]\n\n");
+	printf(boldColor);printf("Flags : [-f otherFilename] [-n reminderName] [-c categoryName]\n[-p priorityInteger in [0,3]]\n\n");printf(defaultColor);
 
 	printf(color3);printf("todo del\n\n");printf(defaultColor);
 	printf("Delete a reminder. If -n is not provided, it will ask for name.\n");
-	printf("Flags : [-f otherFilename] [-n reminderName]\n\n");
+	printf(boldColor);printf("Flags : [-f otherFilename] [-n reminderName]\n\n");printf(defaultColor);
 
 	printf(color3);printf("todo clear\n\n");printf(defaultColor);
 	printf("Clear a category. If -c is not provided, it will ask if you\nwant to clear all categories.\n");
 	printf("If -c is provided without argument, it will ask for a category name.\n");
-	printf("Flags : [-f otherFilename] [-c categoryName]\n\n");
+	printf(boldColor);printf("Flags : [-f otherFilename] [-c categoryName]\n\n");printf(defaultColor);
 
 	printf(color3);printf("todo setp\n\n");printf(defaultColor);
 	printf("Set reminder priority. If -n is not provided, it will ask\nfor name and priority in interactive mode.\n");
-	printf("Flags :  [-f otherFilename] [-n reminderName] [-p priorityInteger\nin [0,3]]\n\n");
+	printf(boldColor);printf("Flags :  [-f otherFilename] [-n reminderName] [-p priorityInteger\nin [0,3]]\n\n");printf(defaultColor);
 
 }
 
