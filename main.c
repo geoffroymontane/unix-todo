@@ -91,7 +91,7 @@ int main(int argc,char *argv[]){
 					categoriesToShowCount=j-i-1;
 					categoriesToShow=malloc(categoriesToShowCount*sizeof(char*));
 					for(int n=i+1;n<j;n++){
-						categoriesToShow[n]=argv[n];
+						categoriesToShow[n-i-1]=argv[n];
 					}
 					i=j;
 					continue;
