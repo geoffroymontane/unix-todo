@@ -23,3 +23,8 @@ Move the executable to a correct directory intended to store executables, such a
 Then, all should be fine. Just enter :
 
 	uxtodo help
+
+
+### License
+
+[GPLv3](LICENSE)
