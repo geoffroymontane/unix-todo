@@ -4,10 +4,7 @@
 #include <readline/history.h>
 #include <string.h>
 
-#include "memleakscheck.c"
-
 #include "structures.c"
-
 
 
 /*
@@ -706,30 +703,26 @@ void displayReminders(struct List_categories *categories){
 }
 
 void displayHelp(){
-
 	printf("\nCOMMANDS\n\n");
 
-	printf(color3);printf("todo\n\n");printf(defaultColor);
-	printf("Will show reminder list. If -c is provided, it will show only\nthose of the specified categories.\n");
+	printf(color3);printf("uxtodo\n\n");printf(defaultColor);
+	printf("It will show the to-do list. If -c is provided, it will show only\nitems of the specified categories.\n\n");
 	printf(boldColor);printf("Flags : [-f otherFilename] [-c categoryName1 categoryName2 ...]\n\n");printf(defaultColor);
 
-	printf(color3);printf("todo help\n\n");printf(defaultColor);
-	printf("Will show how to use this software.\n\n");
+	printf(color3);printf("uxtodo add\n\n");printf(defaultColor);
+	printf("Add an item. If -n is not provided, it will ask for name,\ncategory and priority.\n");
+	printf(boldColor);printf("Flags : [-f otherFilename] [-n itemName] [-c categoryName]\n[-p priorityInteger in [0,3]]\n\n");printf(defaultColor);
 
-	printf(color3);printf("todo add\n\n");printf(defaultColor);
-	printf("Add a reminder. If -n is not provided, it will ask for name,\ncategory and priority.\n");
-	printf(boldColor);printf("Flags : [-f otherFilename] [-n reminderName] [-c categoryName]\n[-p priorityInteger in [0,3]]\n\n");printf(defaultColor);
+	printf(color3);printf("uxtodo del\n\n");printf(defaultColor);
+	printf("Delete an item. If -n is not provided, it will ask for name.\n");
+	printf(boldColor);printf("Flags : [-f otherFilename] [-n itemName]\n\n");printf(defaultColor);
 
-	printf(color3);printf("todo del\n\n");printf(defaultColor);
-	printf("Delete a reminder. If -n is not provided, it will ask for name.\n");
-	printf(boldColor);printf("Flags : [-f otherFilename] [-n reminderName]\n\n");printf(defaultColor);
-
-	printf(color3);printf("todo clear\n\n");printf(defaultColor);
+	printf(color3);printf("uxtodo clear\n\n");printf(defaultColor);
 	printf("Clear a category. If -c is not provided, it will ask if you\nwant to clear all categories.\n");
 	printf("If -c is provided without argument, it will ask for a category name.\n");
 	printf(boldColor);printf("Flags : [-f otherFilename] [-c categoryName]\n\n");printf(defaultColor);
 
-	printf(color3);printf("todo setp\n\n");printf(defaultColor);
+	printf(color3);printf("uxtodo setp\n\n");printf(defaultColor);
 	printf("Set reminder priority. If -n is not provided, it will ask\nfor name and priority in interactive mode.\n");
 	printf(boldColor);printf("Flags :  [-f otherFilename] [-n reminderName] [-p priorityInteger\nin [0,3]]\n\n");printf(defaultColor);
 
