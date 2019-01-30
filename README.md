@@ -18,7 +18,7 @@ If this command failed, just check if gcc and GNU Readline are fully installed o
 
 Move the executable to a correct directory intended to store executables, such as :
 
-	sudo mv uxtodo ~/bin
+	sudo mv uxtodo /bin
 
 Then, all should be fine. Just enter :
 
