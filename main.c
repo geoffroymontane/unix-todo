@@ -692,7 +692,7 @@ void displayReminders(struct List_categories *categories){
 
 		if(strcmp(categories->data[i]->name,"__deleted__")!=0){
 			if(categories->data[i]->reminders->size>0){
-				printf(categories->data[i]->name);
+				printf("%s",categories->data[i]->name);
 				printf("\n");
 			}
 			for(int j=0;j<categories->data[i]->reminders->size;j++){
@@ -703,16 +703,16 @@ void displayReminders(struct List_categories *categories){
 
 				if(j==categories->data[i]->reminders->size-1){
 					printf("└── ");
-					printf(color);
-					printf(categories->data[i]->reminders->data[j]->name);
-					printf(defaultColor);
+					printf("%s",color);
+					printf("%s",categories->data[i]->reminders->data[j]->name);
+					printf("%s",defaultColor);
 					printf("\n\n");
 				}
 				else{
 					printf("├── ");
-					printf(color);
-					printf(categories->data[i]->reminders->data[j]->name);
-					printf(defaultColor);
+					printf("%s",color);
+					printf("%s",categories->data[i]->reminders->data[j]->name);
+					printf("%s",defaultColor);
 					printf("\n");
 				}
 			}
@@ -723,26 +723,26 @@ void displayReminders(struct List_categories *categories){
 void displayHelp(){
 	printf("\nCOMMANDS\n\n");
 
-	printf(color3);printf("uxtodo\n\n");printf(defaultColor);
+	printf("%s",color3);printf("uxtodo\n\n");printf("%s",defaultColor);
 	printf("It will show the to-do list. If -c is provided, it will show only\nitems of the specified categories.\n\n");
-	printf(boldColor);printf("Flags : [-f otherFilename] [-c categoryName1 categoryName2 ...]\n\n");printf(defaultColor);
+	printf("%s",boldColor);printf("Flags : [-f otherFilename] [-c categoryName1 categoryName2 ...]\n\n");printf("%s",defaultColor);
 
-	printf(color3);printf("uxtodo add\n\n");printf(defaultColor);
+	printf("%s",color3);printf("uxtodo add\n\n");printf("%s",defaultColor);
 	printf("Add an item. If -n is not provided, it will ask for name,\ncategory and priority.\n");
-	printf(boldColor);printf("Flags : [-f otherFilename] [-n itemName] [-c categoryName]\n[-p priorityInteger in [0,3]]\n\n");printf(defaultColor);
+	printf("%s",boldColor);printf("Flags : [-f otherFilename] [-n itemName] [-c categoryName]\n[-p priorityInteger in [0,3]]\n\n");printf("%s",defaultColor);
 
-	printf(color3);printf("uxtodo del\n\n");printf(defaultColor);
+	printf("%s",color3);printf("uxtodo del\n\n");printf("%s",defaultColor);
 	printf("Delete an item. If -n is not provided, it will ask for name.\n");
-	printf(boldColor);printf("Flags : [-f otherFilename] [-n itemName]\n\n");printf(defaultColor);
+	printf("%s",boldColor);printf("Flags : [-f otherFilename] [-n itemName]\n\n");printf("%s",defaultColor);
 
-	printf(color3);printf("uxtodo clear\n\n");printf(defaultColor);
+	printf("%s",color3);printf("uxtodo clear\n\n");printf("%s",defaultColor);
 	printf("Clear a category. If -c is not provided, it will ask if you\nwant to clear all categories.\n");
 	printf("If -c is provided without argument, it will ask for a category name.\n");
-	printf(boldColor);printf("Flags : [-f otherFilename] [-c categoryName]\n\n");printf(defaultColor);
+	printf("%s",boldColor);printf("Flags : [-f otherFilename] [-c categoryName]\n\n");printf("%s",defaultColor);
 
-	printf(color3);printf("uxtodo setp\n\n");printf(defaultColor);
+	printf("%s",color3);printf("uxtodo setp\n\n");printf("%s",defaultColor);
 	printf("Set reminder priority. If -n is not provided, it will ask\nfor name and priority in interactive mode.\n");
-	printf(boldColor);printf("Flags :  [-f otherFilename] [-n reminderName] [-p priorityInteger\nin [0,3]]\n\n");printf(defaultColor);
+	printf("%s",boldColor);printf("Flags :  [-f otherFilename] [-n reminderName] [-p priorityInteger\nin [0,3]]\n\n");printf("%s",defaultColor);
 
 }
 
