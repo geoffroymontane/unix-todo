@@ -9,6 +9,7 @@ You have to clone the repository (or download a release) :
 
 	cd ~
 	git clone https://github.com/geoffroymontane/unix-todo
+	cd unix-todo
 
 Then, compile by using gcc :
 
